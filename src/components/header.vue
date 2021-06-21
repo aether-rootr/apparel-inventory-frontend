@@ -1,48 +1,42 @@
 <template>
   <div>
-  <NPageHeader >
-    <template #title>
-      <NA style="text-decoration: none; color: inherit;">
-        服装库存管理系统
-      </NA>
-    </template>
-    <template #header></template>
-    <template #avatar>
-      <NButton text style="font-size: 24px;" @click="handleClick">
-        <NIcon>
-          <AlignJustified />
-        </NIcon>
-      </NButton>
-    </template>
-    <template #footer><NDivider/></template>
-  </NPageHeader>
-  </div>
+      <NPageHeader>
+        <template #title>
+          <NA style="text-decoration: none; color: inherit;" @click="pt">
+            服装库存管理系统
+          </NA>
+        </template>
+        <template #header></template>
+        <template #avatar></template>
+        <template #footer><NDivider/></template>
+      </NPageHeader>
+    </div>
 </template>
 
 <script>
+import { defineComponent } from 'vue'
 import {
   NPageHeader,
-  NDivider,
   NA,
-  NIcon,
-  NButton,
+  NDivider
 } from 'naive-ui'
 
-import {AlignJustified} from '@vicons/tabler'
-
-import { defineComponent } from 'vue'
-
 export default defineComponent({
-  components: {
+  components:{
     NPageHeader,
-    NDivider,
     NA,
-    NIcon,
-    NButton,
-    AlignJustified,
+    NDivider
+  },
+  props:{
+      ttt: String,
   },
   setup() {
-    const 
+  
+  },
+  methods:{
+    pt(){
+      console.log(this.ttt);
+    }
   }
 })
 </script>

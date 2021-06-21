@@ -1,9 +1,8 @@
 import { createApp } from 'vue'
-import naive from "naive-ui";
 import App from './App.vue'
+import domain from './domain.js'
+import router from './router/index.js'
 
-const app = createApp(App);
+global.domain = domain;
 
-app.use(naive);
-
-app.mount("#app");
+createApp(App).use(router).mount('#app')
