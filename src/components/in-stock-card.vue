@@ -1,6 +1,6 @@
 <template>
-  <n-card title="入库明细" hoverable style="max-height: 250">
-    <perfect-scrollbar>
+  <n-card title="入库明细" hoverable style="max-height: 80vh">
+    <perfect-scrollbar style="max-height: calc(60vh);">
       <n-dynamic-input
           v-model:value="customValue"
           :on-create="onCreate"
@@ -91,23 +91,21 @@
            count: 0
           }
         ],
-        options: [
-          {
-            label: "adasd",
-            value: "asdasd"
-          }
-        ],
+        options: [],
       }
+    },
+    mounted(){
+      this.getOption();
     },
     methods: {
       getOption() {
-        const path = this.domain + '/manager/sotcklist';
+        const path = this.domain + '/CargoManager/Get';
         axios.get(path)
           .then((res)=> {
             for(let i = 0; i <= res.data.length; i += 1){
               let tmp = {
-                label: res.data[i],
-                value: res.data[i]
+                label: res.data[i].id,
+                value: res.data[i].id
               };
               this.options.push(tmp);
             }
@@ -124,31 +122,21 @@
         }
       },
       handleUpdateValue(value){
-        const path = this.domain + '/manager/querysotck';
-        let message = {
+        const path = this.domain + '/CargoManager/Query';
+        let mess = {
           id: value
         }
-        
-        
-        console.log(value)
-        console.log(this.customValue);
-        axios.post(path, message)
+        axios.post(path, mess)
           .then((res) => {
-            this.customValue[this.customValue.length - 1].name = res.name;
+            this.customValue[this.customValue.length - 1].name = res.data.name;
           })
           .catch((error) => {
             console.error(error);
             this.NetError();
           })
       },
-      
     }
   })
 </script>
 
 <style src="vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css"></style>
-<style>
-.ps {
-  max-height: 200px;
-}
-</style>

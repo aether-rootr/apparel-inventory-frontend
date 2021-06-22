@@ -31,7 +31,7 @@ export default defineComponent({
   },
   methods:{
     GetData() {
-      const path = this.domain + '/manager/main';
+      const path = this.domain + '/HomeManager/Get';
       axios.get(path)
         .then((res) => {
           this.stock_data.push({

@@ -1,5 +1,7 @@
 <template>
-  <stock-card/>
+  <div style="margin-left: 15px; margin-right: 5px">
+    <stock-card/>
+  </div>
 </template>
 
 <script>
