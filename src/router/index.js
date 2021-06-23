@@ -3,27 +3,51 @@ import Home from '../views/home.vue'
 import InStock from '../views/in-stock.vue'
 import OutStock from '../views/out-stock.vue'
 import Cargo from '../views/cargo.vue'
+import Login from '../views/login.vue'
+import Manager from '../views/manager.vue'
+import User from '../views/user-manager.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    redirect: '/manager'
   },
   {
-    path: '/in-stock',
-    name: 'InStock',
-    component: InStock
+    path: '/manager',
+    name: 'Manager',
+    component: Manager,
+    children: [
+      {
+        path: '',
+        name: 'Home',
+        component: Home
+      },
+      {
+        path: 'in-stock',
+        name: 'InStock',
+        component: InStock
+      },
+      {
+        path: 'out-stock',
+        name: 'OutStock',
+        component: OutStock
+      },
+      {
+        path: 'cargo',
+        name: 'Cargo',
+        component: Cargo
+      },
+      {
+        path: 'user',
+        name: 'User',
+        component: User
+      }
+    ],
   },
   {
-    path: '/out-stock',
-    name: 'OutStock',
-    component: OutStock
-  },
-  {
-    path: '/cargo',
-    name: 'Cargo',
-    component: Cargo
+    path: '/login',
+    name: 'Login',
+    component: Login
   }
 ]
 

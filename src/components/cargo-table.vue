@@ -138,7 +138,7 @@
         this.showModal = true;
       },
       onNegativeClick () {
-        this.message.success('取消')
+        this.message.info('取消')
         this.showModal = false
       },
       onPositiveClick () {
