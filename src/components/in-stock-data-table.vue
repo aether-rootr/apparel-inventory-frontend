@@ -61,11 +61,19 @@
     methods: {
        init() {
         const path = this.domain + '/StockManager/GetInStock';
-        axios.get(path)
+        let mess = {
+          token: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : ''
+        }
+        axios.post(path, mess)
           .then((res) => {
-              this.data = res.data;
-              for(let i = 0; i < this.data.length; i += 1){
-                this.data[i].key = i;
+              if (res.data.state == 'ok') {
+                this.data = res.data.stocks;
+                for(let i = 0; i < this.data.length; i += 1){
+                  this.data[i].key = i;
+                }
+              } else {
+                this.message.error("请先登录");
+                this.$router.push('/login')
               }
           })
           .catch((error) => {

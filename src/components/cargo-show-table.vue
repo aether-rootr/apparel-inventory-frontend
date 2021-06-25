@@ -29,6 +29,14 @@
         key: 'name'
       },
       {
+        title: '货物规格',
+        key: 'type'
+      },
+      {
+        title: '生产厂家',
+        key: 'manufacturer'
+      },
+      {
         title: '货物数量',
         key: 'count'
       },

@@ -34,6 +34,8 @@
     >
       <n-form-item label="货物名称">
         <n-input v-model:value="insertcargo.name" placeholder="输入货物名" />
+        <n-input v-model:value="insertcargo.type" placeholder="输入货物规格" />
+        <n-input v-model:value="insertcargo.manufacturer" placeholder="输入生产厂家" />
       </n-form-item>
     </n-form>
   </n-modal>
@@ -64,6 +66,14 @@
       {
         title: '货物名称',
         key: 'name'
+      },
+      {
+        title: '货物规格',
+        key: 'type'
+      },
+      {
+        title: '生产厂家',
+        key: 'manufacturer'
       },
       {
         title: '货物库存数量',
@@ -103,9 +113,18 @@
     methods: {
       createData() {
           const path = global.domain.uri + '/CargoManager/Get';
-          axios.get(path)
+          let mess = {
+            token: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : ''
+          }
+          axios.post(path, mess)
             .then((res) => {
-              this.data = res.data;
+              if(res.data.state == "ok") {
+                this.data = res.data.cargos;
+                console.log(res.data.cargos);
+              } else {
+                this.message.error("请先登录");
+                this.$router.push('/login')
+              }
             })
             .catch((error) => {
               console.log(error);
@@ -117,15 +136,24 @@
       },
       DeleteCargo () {
         const path = global.domain.uri + '/CargoManager/Remove';
-        axios.post(path, this.checkedRowKeys)
+        let mess = {
+          token: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : '',
+          cargos: this.checkedRowKeys
+        };
+        axios.post(path, mess)
           .then((res)=> {
             console.log(res.data);
             if(res.data.state == 'ok') {
               this.message.success('成功删除')
               this.showModal = false
-            } else {
-              this.message.warning('未能成功删除')
+            } else if(res.data.state == 'reject') {
+              this.message.warning('你没有权限请联系管理员,或重新登录');
+            } else if(res.data.state == 'error'){
+              this.message.warning('未能成功删除全部货物,默认保留全部库存非零货物')
               this.showModal = false
+            } else {
+              this.message.error("请先登录");
+              this.$router.push('/login')
             }
             this.createData();
           })
@@ -143,14 +171,26 @@
       },
       onPositiveClick () {
         const path = global.domain.uri + '/CargoManager/Add';
-        axios.post(path, this.insertcargo)
+        let mess = {
+          token: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : '',
+          name: this.insertcargo.name,
+          type: this.insertcargo.type,
+          manufacturer: this.insertcargo.manufacturer
+        }
+
+        axios.post(path, mess)
           .then((res) => {
             if(res.data.state == 'ok') {
               this.message.success('成功添加')
               this.showModal = false
-            } else {
+            } else if(res.data.state == 'reject') {
+              this.message.warning('你没有权限请联系管理员,或重新登录');
+            } else if(res.data.state == 'error') {
               this.message.warning('该货物已存在')
               this.showModal = false
+            } else {
+              this.message.error("请先登录");
+              this.$router.push('/login')
             }
             this.createData();
           })

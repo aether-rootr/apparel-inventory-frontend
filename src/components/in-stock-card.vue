@@ -106,18 +106,26 @@
     methods: {
       getOption() {
         const path = this.domain + '/CargoManager/Get';
-        axios.get(path)
+         let mess = {
+            token: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : ''
+          }
+          axios.post(path, mess)
           .then((res)=> {
-            for(let i = 0; i < res.data.length; i += 1){
-              let tmp = {
-                label: res.data[i].id,
-                value: res.data[i].id
-              };
-              this.options.push(tmp);
+            if(res.data.state == "ok") {
+              for(let i = 0; i < res.data.cargos.length; i += 1){
+                let tmp = {
+                  label: res.data.cargos[i].id,
+                  value: res.data.cargos[i].id
+                };
+                this.options.push(tmp);
+              }
+            } else {
+              this.message.error("请先登录");
+              this.$router.push('/login')
             }
           })
           .catch((error) => {
-            console.error(error);
+            console.log(error);
             this.message.error('网络错误');
           })
       },
@@ -130,9 +138,6 @@
       },
       handleUpdateValue(value){
         const path = this.domain + '/CargoManager/Query';
-        let mess = {
-          id: value
-        }
 
         let cnt = 0;
         for(let i = 0; i < this.customValue.length; i += 1){
@@ -148,16 +153,26 @@
           }
         }
 
+        let mess = {
+          token: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : '',
+          id: value
+        }
+
         axios.post(path, mess)
           .then((res) => {
-            for(let i = 0; i < this.customValue.length; i += 1){
-              if(this.customValue[i].id == value) {
-                this.customValue[i].name = res.data.name;
+            if(res.data.state == 'ok') {
+              for(let i = 0; i < this.customValue.length; i += 1){
+                if(this.customValue[i].id == value) {
+                  this.customValue[i].name = res.data.name;
+                }
               }
+            } else {
+              this.message.error("请先登录");
+              this.$router.push('/login')
             }
           })
           .catch((error) => {
-            console.error(error);
+            console.log(error);
             this.message.error('网络错误');
           })
       },
@@ -169,19 +184,30 @@
             return;
           }
         }
-        axios.post(path, this.customValue)
+
+        let mess = {
+          token: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : '',
+          cargos: this.customValue
+        }
+
+        axios.post(path, mess)
           .then((res) => {
             if(res.data.state == "ok") {
               this.message.success('成功提交');
               this.showModal = false
               this.$emit('emitinit')
-            } else {
+            } else if(res.data.state == "error") {
               this.message.warning('提交失败');
               this.showModal = false
+            } else if(res.data.state == "reject") {
+              this.message.warning('你没有权限请联系管理员,或重新登录');
+            } else {
+              this.message.error("请先登录");
+              this.$router.push('/login')
             }
           })
           .catch((error) => {
-            console.error(error);
+            console.log(error);
             this.message.error('网络错误');
           })
       },

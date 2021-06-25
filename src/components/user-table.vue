@@ -73,11 +73,23 @@ export default defineComponent({
     const message = useMessage()
     let refresh = () => {
       const path = this.domain + "/UserManager/GetUser";
-      axios.get(path)
+      let mess = {
+        token: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : ''
+      }
+      axios.post(path, mess)
         .then((res) => {
-          this.data = res.data;
-          for (let i = 0; i < res.data.length; i++){
-            this.data[i].key = i;
+          console.log(res.data.state);
+          if(res.data.state == "ok"){
+            this.data = res.data.userlist;
+            for (let i = 0; i < res.data.length; i++){
+              this.data[i].key = i;
+            }
+          }else if(res.data.state == "reject") {
+            this.message.warning('你没有权限请联系管理员,或重新登录');
+            this.$router.push('/')
+          } else {
+            this.message.error("请先登录");
+            this.$router.push('/login')
           }
         })
         .catch((error) => {
@@ -108,7 +120,8 @@ export default defineComponent({
           const path = domain + "/UserManager/ChangAuth";
           let mess = {
             username: rowData.username,
-            auth: 'user'
+            auth: 'user',
+            token: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : ''
           }
           console.log("pass")
           axios.post(path, mess)
@@ -127,7 +140,8 @@ export default defineComponent({
           const path = domain + "/UserManager/ChangAuth";
           let mess = {
             username: rowData.username,
-            auth: 'admin'
+            auth: 'admin',
+            token: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : ''
           }
           axios.post(path, mess)
             .then((res)=>{
@@ -162,7 +176,8 @@ export default defineComponent({
       }),
       pagination: {
         pageSize: 10
-      }
+      },
+      message
     }
   },
   mounted() {
@@ -171,11 +186,23 @@ export default defineComponent({
   methods:{
     init() {
       const path = this.domain + "/UserManager/GetUser";
-      axios.get(path)
+      let mess = {
+        token: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : ''
+      }
+      axios.post(path, mess)
         .then((res) => {
-          this.data = res.data;
-          for (let i = 0; i < res.data.length; i++){
-            this.data[i].key = i;
+          console.log(res.data.state);
+          if(res.data.state == "ok"){
+            this.data = res.data.userlist;
+            for (let i = 0; i < res.data.length; i++){
+              this.data[i].key = i;
+            }
+          }else if(res.data.state == "reject") {
+            this.message.warning('你没有权限请联系管理员,或重新登录');
+            this.$router.push('/')
+          } else {
+            this.message.error("请先登录");
+            this.$router.push('/login')
           }
         })
         .catch((error) => {
