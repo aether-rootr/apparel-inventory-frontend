@@ -147,7 +147,7 @@
               this.message.warning('该货物已在入库单中');
               this.customValue[i].id = null;
               this.customValue[i].name ='';
-              this.customValue[i].max = 0;
+              this.customValue[i].count = 1;
               return;
             }
           }

@@ -71,6 +71,7 @@ export default defineComponent({
   },
   data () {
     const message = useMessage()
+    let router = this.$router;
     let refresh = () => {
       const path = this.domain + "/UserManager/GetUser";
       let mess = {
@@ -158,6 +159,7 @@ export default defineComponent({
         Delete(rowData) {
           const path = domain + "/UserManager/Delete";
           let mess = {
+            token: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : '',
             username: rowData.username,
             auth: ''
           }
@@ -166,6 +168,11 @@ export default defineComponent({
               if(res.data.state == 'ok'){
                 message.success('删除成功');
                 refresh();
+              }else if(res.data.state == "reject") {
+                message.warning('你没有权限请联系超级管理员,或重新登录');
+              } else {
+                message.error("请先登录");
+                router.push('/login')
               }
             })
             .catch((error) =>{
