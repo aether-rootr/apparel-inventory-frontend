@@ -45,7 +45,7 @@
   import {Home} from '@vicons/tabler'
   import {Box16Filled} from '@vicons/fluent'
   import {ShoppingCartSharp} from '@vicons/material'
-  import {UserCircle} from '@vicons/fa'
+  import {UserCircle, Key} from '@vicons/fa'
   import {RouterLink} from 'vue-router'
   
   import Header from '../components/header.vue'
@@ -113,6 +113,16 @@
       ),
       key: 'user',
       icon: renderIcon(UserCircle)
+    },
+    {
+      label: () => h(
+        RouterLink,
+        {
+          to:'/manager/changepassword',
+        },'修改密码'
+      ),
+      key: 'changepassword',
+      icon: renderIcon(Key)
     }
   ]
 

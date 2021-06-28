@@ -6,6 +6,7 @@ import Cargo from '../views/cargo.vue'
 import Login from '../views/login.vue'
 import Manager from '../views/manager.vue'
 import User from '../views/user-manager.vue'
+import ChangePass from '../views/change-password.vue'
 
 const routes = [
   {
@@ -41,6 +42,11 @@ const routes = [
         path: 'user',
         name: 'User',
         component: User
+      },
+      {
+        path: 'changepassword',
+        name: 'ChangePass',
+        component: ChangePass
       }
     ],
   },

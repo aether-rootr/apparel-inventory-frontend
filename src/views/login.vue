@@ -102,6 +102,7 @@ export default defineComponent({
           if(res.data.state == 'ok') {
             this.token = res.data.token;
             localStorage.setItem('Authorization', this.token);
+            localStorage.setItem('Username', this.logindata.username);
             this.$router.push('/');
             this.message.success('登录成功');
           } else {
