@@ -1,7 +1,7 @@
 <template>
   <div style="margin-left: 15px; margin-right: 5px">
     <stock-card @emitinit="emitinit"/>
-    <out-stock-data-table ref="OutStockDataTable"/>
+    <out-stock-data-table :_path="p" ref="OutStockDataTable"/>
   </div>
 </template>
 
@@ -14,6 +14,11 @@ export default defineComponent({
   components: {
     StockCard,
     OutStockDataTable,
+  },
+  data() {
+    return {
+      p: "/StockManager/UpdateOutStock"
+    }
   },
   methods: {
     emitinit() {

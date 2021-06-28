@@ -20,6 +20,10 @@ const createColumns = ({ToUser, ToAdmin, Delete}) => {
       key: 'username'
     },
     {
+      title: '用户姓名',
+      key: 'name'
+    },
+    {
       title: '权限等级',
       key: 'auth'
     },

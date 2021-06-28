@@ -29,8 +29,24 @@
         key: 'name'
       },
       {
-        title: '货物规格',
-        key: 'type'
+        title: '颜色',
+        key: 'color'
+      },
+      {
+        title: '材质',
+        key: 'material'
+      },
+      {
+        title: '尺寸',
+        key: 'size'
+      },
+      {
+        title: '出厂价格',
+        key: 'exfactoryprice'
+      },
+      {
+        title: '零售价格',
+        key: 'retailprice'
       },
       {
         title: '生产厂家',

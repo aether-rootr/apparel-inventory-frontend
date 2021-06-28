@@ -13,6 +13,8 @@
     @negative-click="onNegativeClick"
     style="width: 1000px"
   >
+
+    <n-input type="textarea" placeholder="备注"  v-model:value="remarks" round clearable />
     <perfect-scrollbar style="max-height: calc(60vh);">
       <n-dynamic-input
           v-model:value="customValue"
@@ -98,6 +100,7 @@
         options: [],
         showModal: showModalRef,
         message,
+        remarks: '',
       }
     },
     mounted(){
@@ -187,6 +190,7 @@
 
         let mess = {
           token: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : '',
+          remarks: this.remarks,
           cargos: this.customValue
         }
 

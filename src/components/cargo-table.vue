@@ -22,7 +22,7 @@
     positive-text="确认"
     @positive-click="onPositiveClick"
     @negative-click="onNegativeClick"
-    negative-text="算了"
+    negative-text="取消"
   >
     <n-form
       inline
@@ -33,28 +33,114 @@
       ref="formRef"
     >
       <n-form-item label="货物名称">
+        <n-a>货物名称</n-a>
         <n-input v-model:value="insertcargo.name" placeholder="输入货物名" />
-        <n-input v-model:value="insertcargo.type" placeholder="输入货物规格" />
+      </n-form-item>
+
+      <n-form-item label="货物颜色">
+        <n-a>货物颜色</n-a>
+        <n-input v-model:value="insertcargo.color" placeholder="输入货物颜色" />
+      </n-form-item>
+
+      <n-form-item label="货物材质">
+        <n-a>货物材质</n-a>
+        <n-input v-model:value="insertcargo.material" placeholder="输入货物材质" />
+      </n-form-item>
+
+      <n-form-item label="货物尺寸">
+        <n-a>货物尺寸</n-a>
+        <n-input v-model:value="insertcargo.size" placeholder="输入货物尺寸" />
+      </n-form-item>
+
+      <n-form-item label="出厂价格">
+        <n-a>出厂价格</n-a>
+        <n-input v-model:value="insertcargo.exfactoryprice" placeholder="输入出厂价格" />
+      </n-form-item>
+
+      <n-form-item label="零售价格">
+        <n-a>零售价格</n-a>
+        <n-input v-model:value="insertcargo.retailprice" placeholder="输入零售价格" />
+      </n-form-item>
+
+      <n-form-item label="生产厂家">
+        <n-a>生产厂家</n-a>
         <n-input v-model:value="insertcargo.manufacturer" placeholder="输入生产厂家" />
       </n-form-item>
+    </n-form>
+  </n-modal>
+
+  <n-modal
+    v-model:show="showChange"
+    :mask-closable="false"
+    preset="dialog"
+    title="修改信息"
+    positive-text="确认"
+    @positive-click="changeonPositiveClick"
+    @negative-click="changeonNegativeClick"
+    negative-text="取消"
+  >
+    <n-form
+      inline
+      :label-width="80"
+      :model="formValue"
+      :rules="rules"
+      :size="size"
+      ref="formRef"
+    >
+      <n-form-item label="货物名称">
+        <n-a>货物名称</n-a>
+        <n-input v-model:value="changecargo.name" placeholder="输入货物名" />
+      </n-form-item>
+
+      <n-form-item label="货物颜色">
+        <n-a>货物颜色</n-a>
+        <n-input v-model:value="changecargo.color" placeholder="输入货物颜色" />
+      </n-form-item>
+
+      <n-form-item label="货物材质">
+        <n-a>货物材质</n-a>
+        <n-input v-model:value="changecargo.material" placeholder="输入货物材质" />
+      </n-form-item>
+
+      <n-form-item label="货物尺寸">
+        <n-a>货物尺寸</n-a>
+        <n-input v-model:value="changecargo.size" placeholder="输入货物尺寸" />
+      </n-form-item>
+
+      <n-form-item label="出厂价格">
+        <n-a>出厂价格</n-a>
+        <n-input v-model:value="changecargo.exfactoryprice" placeholder="输入出厂价格" />
+      </n-form-item>
+
+      <n-form-item label="零售价格">
+        <n-a>零售价格</n-a>
+        <n-input v-model:value="changecargo.retailprice" placeholder="输入零售价格" />
+      </n-form-item>
+
+      <n-form-item label="生产厂家">
+        <n-a>生产厂家</n-a>
+        <n-input v-model:value="changecargo.manufacturer" placeholder="输入生产厂家" />
+      </n-form-item>
+
     </n-form>
   </n-modal>
 </template>
 
 <script>
-  import { defineComponent } from 'vue'
+  import { defineComponent,h,reactive } from 'vue'
   import {
     NButton,
     useMessage,
     NDataTable,
     NSpace,
     NModal,
-    NInput
+    NInput,
+    NA
   } from 'naive-ui'
   import axios from 'axios'
   import {PerfectScrollbar} from 'vue3-perfect-scrollbar'
 
-  const createColumns = () => {
+  const createColumns = ({changeCargo}) => {
     return [
       {
         type: 'selection'
@@ -68,8 +154,24 @@
         key: 'name'
       },
       {
-        title: '货物规格',
-        key: 'type'
+        title: '颜色',
+        key: 'color'
+      },
+      {
+        title: '材质',
+        key: 'material'
+      },
+      {
+        title: '尺寸',
+        key: 'size'
+      },
+      {
+        title: '出厂价格',
+        key: 'exfactoryprice'
+      },
+      {
+        title: '零售价格',
+        key: 'retailprice'
       },
       {
         title: '生产厂家',
@@ -78,6 +180,20 @@
       {
         title: '货物库存数量',
         key: 'count'
+      },
+      {
+        title: '操作',
+        key: 'actions',
+        render (row) {
+          return h(
+            NButton,
+              {
+                type: "primary",
+                onClick: () => changeCargo(row)
+              },
+              <p>修改信息</p>
+          )
+        }
       },
     ]
   }
@@ -89,28 +205,50 @@
       NSpace,
       NModal,
       NInput,
-      PerfectScrollbar
+      PerfectScrollbar,
+      NA
     },
     data () {
-      const message = useMessage()
+      const message = useMessage();
+      let showChange = reactive(false);
+      let nowrow = reactive({});
       return {
         data: [],
         pagination: {
           pageSize: 15
         },
-        columns: createColumns(),
+        nowrow,
+        showChange,
+        columns: [],
         checkedRowKeys: [],
-        insertcargo:{
-          name: ''
-        },
+        insertcargo:{},
+        changecargo:{},
         showModal: false,
         message,
       }
     },
     mounted(){
+      this.init();
       this.createData();
     },
     methods: {
+      init() {
+        let changeCargo = (rowData) => {
+            this.nowrow = rowData;
+            this.showChange = true;
+            this.changecargo.name = rowData.name;
+            this.changecargo.color = rowData.color;
+            this.changecargo.material = rowData.material;
+            this.changecargo.size = rowData.size;
+            this.changecargo.exfactoryprice = rowData.exfactoryprice;
+            this.changecargo.retailprice = rowData.retailprice;
+            this.changecargo.manufacturer = rowData.manufacturer;
+          }
+
+        this.columns = createColumns({
+          changeCargo
+        })
+      },
       createData() {
           const path = global.domain.uri + '/CargoManager/Get';
           let mess = {
@@ -120,7 +258,6 @@
             .then((res) => {
               if(res.data.state == "ok") {
                 this.data = res.data.cargos;
-                console.log(res.data.cargos);
               } else {
                 this.message.error("请先登录");
                 this.$router.push('/login')
@@ -142,7 +279,6 @@
         };
         axios.post(path, mess)
           .then((res)=> {
-            console.log(res.data);
             if(res.data.state == 'ok') {
               this.message.success('成功删除')
               this.showModal = false
@@ -174,14 +310,85 @@
         let mess = {
           token: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : '',
           name: this.insertcargo.name,
-          type: this.insertcargo.type,
+          color: this.insertcargo.color,
+          material: this.insertcargo.material,
+          size: this.insertcargo.size,
+          exfactoryprice: this.insertcargo.exfactoryprice,
+          retailprice: this.insertcargo.retailprice,
           manufacturer: this.insertcargo.manufacturer
         }
+
+        if(
+          mess.name.length == 0 ||
+          mess.color.length == 0 ||
+          mess.material.length == 0 ||
+          mess.size.length == 0 ||
+          mess.exfactoryprice.length == 0 ||
+          mess.retailprice.length == 0 ||
+          mess.manufacturer.length == 0
+          ) {
+            this.message.warning('存在未填项无法提交');
+            return;
+          }
 
         axios.post(path, mess)
           .then((res) => {
             if(res.data.state == 'ok') {
               this.message.success('成功添加')
+              this.showModal = false
+            } else if(res.data.state == 'reject') {
+              this.message.warning('你没有权限请联系管理员,或重新登录');
+            } else if(res.data.state == 'error') {
+              this.message.warning('该货物已存在')
+              this.showModal = false
+            } else {
+              this.message.error("请先登录");
+              this.$router.push('/login')
+            }
+            this.createData();
+          })
+          .catch((error) => {
+            console.log(error)
+            this.message.error('网络错误')
+            this.showModal = false
+          })
+      },
+
+      changeonNegativeClick () {
+        this.message.info('取消')
+        this.showChange = false
+      },
+      changeonPositiveClick () {
+        const path = global.domain.uri + '/CargoManager/Update';
+        let mess = {
+          token: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : '',
+          id: this.nowrow.id,
+          name: this.changecargo.name,
+          color: this.changecargo.color,
+          material: this.changecargo.material,
+          size: this.changecargo.size,
+          exfactoryprice: this.changecargo.exfactoryprice,
+          retailprice: this.changecargo.retailprice,
+          manufacturer: this.changecargo.manufacturer
+        }
+
+        if(
+          mess.name.length == 0 ||
+          mess.color.length == 0 ||
+          mess.material.length == 0 ||
+          mess.size.length == 0 ||
+          mess.exfactoryprice.length == 0 ||
+          mess.retailprice.length == 0 ||
+          mess.manufacturer.length == 0
+          ) {
+            this.message.warning('存在未填项无法提交');
+            return;
+          }
+
+        axios.post(path, mess)
+          .then((res) => {
+            if(res.data.state == 'ok') {
+              this.message.success('成功修改')
               this.showModal = false
             } else if(res.data.state == 'reject') {
               this.message.warning('你没有权限请联系管理员,或重新登录');
